@@ -1,0 +1,14 @@
+.idea
+
+.env
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.pytest_cache/
+data/*.db
+data/*.db-*
+data/squid_passwd
+logs/
+test/
