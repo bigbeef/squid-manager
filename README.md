@@ -1,12 +1,12 @@
-# Squid Manager
+# Squid代理管理系统
 
-Squid Manager 是一个用于管理 Squid 代理账号的轻量后台。
+Squid代理管理系统是一个用于管理 Squid 代理账号的轻量后台。
 
 如果你在使用 Squid 搭建代理服务，并且需要给不同用户分配账号、设置密码、控制启用状态或配置到期时间，这个项目可以帮你用网页后台完成这些操作，不需要手动维护 Squid 的认证文件。
 
 ## 项目能做什么
 
-Squid Manager 主要解决 Squid 代理账号不好管理的问题。
+Squid代理管理系统主要解决 Squid 代理账号不好管理的问题。
 
 你可以在后台创建代理账号，设置账号密码和过期时间，随时启用、禁用或删除账号。系统会自动把可用账号同步到 Squid 使用的 passwd 文件中，账号被禁用、删除或到期后，会自动从生效配置中移除。
 
@@ -29,7 +29,7 @@ Squid Manager 主要解决 Squid 代理账号不好管理的问题。
 - **手动同步能力**：后台提供手动同步按钮，方便在需要时重新生成 passwd 文件。
 - **分页账号列表**：账号较多时可以分页查看和管理。
 - **管理员登录**：后台需要管理员登录后才能访问。
-- **验证码保护**：登录页面带验证码，减少后台被暴力尝试的风险。
+- **验证码保护**：登录页面带验证码，并使用独立的浅蓝科技风登录界面，减少后台被暴力尝试的风险。
 - **Docker 部署**：支持通过 Docker 快速部署。
 
 ## 账号状态说明
@@ -105,9 +105,9 @@ ADMIN_PASSWORD=change-this-password
 
 如果你还没有准备好 Squid 服务，可以参考：
 
-[README_SQUID.md](README_SQUID.md)
+[README_SQUID.md](https://github.com/bigbeef/squid-manager/blob/master/README_SQUID.md)
 
-Squid Manager 只负责管理 Squid 认证账号，Squid 服务本身需要单独部署。
+Squid代理管理系统只负责管理 Squid 认证账号，Squid 服务本身需要单独部署。
 
 ## 本地运行
 

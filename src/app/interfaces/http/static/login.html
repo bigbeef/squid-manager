@@ -3,129 +3,144 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Squid管理系统 - 登录</title>
+  <title>Squid代理管理系统 - 登录</title>
   <link rel="stylesheet" href="/static/css/common.css">
   <link rel="stylesheet" href="/static/css/login.css">
 </head>
 <body>
-  <main class="page">
-    <div class="brand" aria-label="Squid管理系统">
-      <div class="brand-mark">S</div>
-      <span>Squid管理系统</span>
-    </div>
+  <main class="login-page">
+    <header class="brand" aria-label="Squid代理管理系统">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M24 6l14 6.2v10.6c0 8.6-5.7 15.8-14 19.2-8.3-3.4-14-10.6-14-19.2V12.2L24 6z" fill="currentColor" opacity=".22"/>
+          <path d="M24 10.5l10 4.4v8.4c0 6.2-3.8 11.7-10 14.5-6.2-2.8-10-8.3-10-14.5v-8.4l10-4.4z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M19 24.2l3.4 3.4 7.1-8" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="brand-name">Squid代理管理系统</span>
+    </header>
 
-    <section class="shell">
-      <div class="hero" aria-hidden="true">
-        <h1>Squid管理系统</h1>
-        <p class="hero-subtitle">安全、稳定、高效的代理服务管理</p>
+    <section class="hero-copy" aria-label="系统介绍">
+      <h1>Squid代理管理系统</h1>
+      <p class="hero-subtitle">安全、稳定、高效的代理服务管理</p>
 
-        <div class="feature-row">
-          <div class="feature">
-            <span class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-            </span>
-            <div>
-              <h2>安全可靠</h2>
-              <p>多重防护保障数据安全</p>
-            </div>
-          </div>
-          <div class="feature">
-            <span class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="18" cy="5" r="3"></circle>
-                <circle cx="6" cy="12" r="3"></circle>
-                <circle cx="18" cy="19" r="3"></circle>
-                <path d="M8.6 13.5l6.8 4"></path>
-                <path d="M15.4 6.5l-6.8 4"></path>
-              </svg>
-            </span>
-            <div>
-              <h2>稳定高效</h2>
-              <p>智能调度保障服务稳定</p>
-            </div>
-          </div>
-          <div class="feature">
-            <span class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 3v18h18"></path>
-                <path d="M7 15l4-4 3 3 5-7"></path>
-              </svg>
-            </span>
-            <div>
-              <h2>便捷管理</h2>
-              <p>可视化管理轻松运维</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="login-side">
-        <section class="login-card" aria-labelledby="loginTitle">
-          <div class="card-badge" aria-hidden="true">
-            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              <path d="M9 12l2 2 4-5"></path>
+      <div class="hero-features" aria-label="系统特性">
+        <article class="feature-item">
+          <span class="feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="M9 12l2 2 4-5"/>
             </svg>
-          </div>
+          </span>
+          <span>
+            <strong>安全可靠</strong>
+            <em>多重防护保障数据安全</em>
+          </span>
+        </article>
 
-          <h2 id="loginTitle">欢迎登录</h2>
-          <p class="hint"></p>
+        <article class="feature-item">
+          <span class="feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12h4l3 8 4-16 3 8h4"/>
+            </svg>
+          </span>
+          <span>
+            <strong>稳定高效</strong>
+            <em>智能同步保障服务稳定</em>
+          </span>
+        </article>
 
-          <form id="loginForm" class="form" autocomplete="on">
-            <div class="error-message" id="errorMessage" role="alert"></div>
-
-            <label class="field" for="username">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-              <input id="username" name="username" type="text" placeholder="请输入账号" autocomplete="username" aria-label="账号" required>
-            </label>
-
-            <div class="field password-field">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-              <input id="password" name="password" type="password" placeholder="请输入密码" autocomplete="current-password" aria-label="密码" required>
-              <button class="password-toggle" id="togglePassword" type="button" aria-label="显示密码" aria-pressed="false">
-                <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg>
-              </button>
-            </div>
-
-            <div class="captcha-row" aria-label="验证码校验">
-              <label class="field" for="captcha">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                  <path d="M9 12l2 2 4-5"></path>
-                </svg>
-                <input id="captcha" name="captcha" type="text" placeholder="请输入验证码" autocomplete="off" aria-describedby="captchaNote" maxlength="4" required>
-              </label>
-              <div class="captcha-panel">
-                <button class="captcha-image-button" id="refreshCaptcha" type="button" aria-label="刷新验证码" title="点击刷新验证码">
-                  <img class="captcha-image" id="captchaImage" alt="验证码" width="132" height="44">
-                </button>
-                <div class="captcha-note" id="captchaNote">点击图片刷新</div>
-              </div>
-            </div>
-
-            <label class="remember-row" for="rememberPassword">
-              <input id="rememberPassword" name="rememberPassword" type="checkbox">
-              <span>记住密码</span>
-            </label>
-
-            <button class="login-button" id="loginButton" type="submit">登录</button>
-          </form>
-        </section>
+        <article class="feature-item">
+          <span class="feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3v18h18"/>
+              <path d="M7 15l4-4 3 3 5-7"/>
+            </svg>
+          </span>
+          <span>
+            <strong>便捷管理</strong>
+            <em>可视化管理轻松运维</em>
+          </span>
+        </article>
       </div>
     </section>
 
-    <footer class="footer">© 2026-2026 Squid管理系统：让代理服务管理更简单更安全</footer>
+    <section class="login-card" aria-labelledby="loginTitle">
+      <div class="card-emblem" aria-hidden="true">
+        <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="36" cy="36" r="34" fill="currentColor" opacity=".12"/>
+          <path d="M36 15l16 7v12.4c0 10.2-6.4 18.1-16 21.6-9.6-3.5-16-11.4-16-21.6V22l16-7z" fill="currentColor" opacity=".18"/>
+          <path d="M36 17.5l13.2 5.9v10.8c0 8.1-4.8 14.9-13.2 18.2-8.4-3.3-13.2-10.1-13.2-18.2V23.4L36 17.5z" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M30.2 36.3l4.2 4.2 8.3-9.4" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <h2 id="loginTitle">欢迎登录</h2>
+      <p class="login-desc">请登录管理员账号进入系统</p>
+
+      <form id="loginForm" class="login-form" autocomplete="on">
+        <div class="error-message" id="errorMessage" role="alert"></div>
+
+        <label class="field" for="username">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <input id="username" name="username" type="text" placeholder="请输入账号" autocomplete="username" aria-label="账号" required>
+        </label>
+
+        <div class="field password-field">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <input id="password" name="password" type="password" placeholder="请输入密码" autocomplete="current-password" aria-label="密码" required>
+          <button class="password-toggle" id="togglePassword" type="button" aria-label="显示密码" aria-pressed="false">
+            <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="captcha-row" aria-label="验证码校验">
+          <label class="field captcha-field" for="captcha">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 7h16"/>
+              <path d="M4 12h10"/>
+              <path d="M4 17h8"/>
+              <path d="M18 14l2 2 3-5"/>
+            </svg>
+            <input id="captcha" name="captcha" type="text" placeholder="请输入验证码" autocomplete="off" aria-describedby="captchaNote" maxlength="4" required>
+          </label>
+
+          <div class="captcha-panel">
+            <button class="captcha-image-button" id="refreshCaptcha" type="button" aria-label="刷新验证码" title="点击刷新验证码">
+              <img class="captcha-image" id="captchaImage" alt="验证码" width="142" height="52">
+            </button>
+            <span class="captcha-note" id="captchaNote">点击图片刷新</span>
+          </div>
+        </div>
+
+        <div class="login-options">
+          <label class="remember-row" for="rememberPassword">
+            <input id="rememberPassword" name="rememberPassword" type="checkbox">
+            <span>记住密码</span>
+          </label>
+          <span class="secure-tip">验证码保护</span>
+        </div>
+
+        <button class="login-button" id="loginButton" type="submit">登录</button>
+
+        <div class="security-list" aria-hidden="true">
+          <span>安全连接</span>
+          <span>会话保护</span>
+          <span>代理账号管控</span>
+        </div>
+      </form>
+
+      <p class="card-footer">© 2026 Squid代理管理系统</p>
+    </section>
   </main>
 
   <script src="/static/js/login.js"></script>
