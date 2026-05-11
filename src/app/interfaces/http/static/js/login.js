@@ -97,7 +97,7 @@ loginForm.addEventListener('submit', async (event) => {
 
     if (response.ok) {
       saveRememberedCredentials(username, password);
-      window.location.href = '/accounts';
+      window.location.href = '/admin#/accounts';
       return;
     }
 

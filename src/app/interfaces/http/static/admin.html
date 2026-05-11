@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Squid代理管理系统 后台管理</title>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui@2.15.14/lib/theme-chalk/index.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/common.css">
+  <link rel="stylesheet" href="/static/css/admin-layout.css">
+  <link rel="stylesheet" href="/static/css/accounts.css">
+</head>
+<body class="admin-page">
+  <div id="admin-app" v-cloak>
+    <el-container class="admin-shell">
+      <admin-header @logout="logout"></admin-header>
+
+      <el-container class="admin-body">
+        <admin-sidebar
+          :menus="menus"
+          :active-menu="currentKey"
+          @select="navigate">
+        </admin-sidebar>
+
+        <el-main class="admin-main">
+          <component :is="currentComponent" :key="currentKey"></component>
+        </el-main>
+      </el-container>
+    </el-container>
+  </div>
+
+  <script src="https://unpkg.com/vue@2.7.16/dist/vue.min.js"></script>
+  <script src="https://unpkg.com/element-ui@2.15.14/lib/index.js"></script>
+  <script src="/static/js/admin-common.js"></script>
+  <script src="/static/js/admin-layout.js"></script>
+  <script src="/static/js/accounts-view.js"></script>
+  <script src="/static/js/admin.js"></script>
+</body>
+</html>

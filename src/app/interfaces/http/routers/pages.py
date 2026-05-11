@@ -10,7 +10,7 @@ router = APIRouter(tags=["pages"])
 
 @router.get("/")
 def index() -> RedirectResponse:
-    return RedirectResponse(url="/accounts", status_code=303)
+    return RedirectResponse(url="/admin#/accounts", status_code=303)
 
 
 @router.get("/login")
@@ -19,5 +19,10 @@ def login_page() -> FileResponse:
 
 
 @router.get("/accounts")
-def accounts_page() -> FileResponse:
-    return FileResponse(STATIC_DIR / "accounts.html")
+def accounts_page() -> RedirectResponse:
+    return RedirectResponse(url="/admin#/accounts", status_code=303)
+
+
+@router.get("/admin")
+def admin_page() -> FileResponse:
+    return FileResponse(STATIC_DIR / "admin.html")
