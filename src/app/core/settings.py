@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parents[3]
 DEFAULT_SQLITE_DB_PATH = BASE_DIR / "data" / "squid_manager.db"
-DEFAULT_SQUID_PASSWD_PATH = BASE_DIR / "data" / "squid_passwd"
+DEFAULT_SQUID_PASSWD_PATH = BASE_DIR / "squid" / "squid_passwd"
 
 load_dotenv(BASE_DIR / ".env")
 

@@ -39,11 +39,75 @@ http://127.0.0.1:8000/login
 
 ```env
 SQLITE_DB_PATH=data/squid_manager.db
-SQUID_PASSWD_PATH=data/squid_passwd
+SQUID_PASSWD_PATH=squid/squid_passwd
 ACCOUNT_EXPIRATION_SCAN_INTERVAL_SECONDS=60
 ```
 
 `SQUID_PASSWD_PATH` 是生成给 Squid 使用的 passwd 文件路径。应用会把启用且未过期账号写入该文件。
+
+## Docker 部署
+
+### 构建镜像
+
+```powershell
+docker build -f docker/Dockerfile -t squid-manager .
+```
+
+### 启动容器
+
+推荐在启动时动态传入 `.env` 参数，而不是把 `.env` 打包进镜像：
+
+```powershell
+docker run -d --name squid-manager `
+  -p 8000:8000 `
+  --env-file .env `
+  -v ${PWD}/data:/app/data `
+  -v ${PWD}/squid:/app/squid `
+  squid-manager
+```
+
+容器内默认路径：
+
+```env
+SQLITE_DB_PATH=/app/data/squid_manager.db
+SQUID_PASSWD_PATH=/app/squid/squid_passwd
+```
+
+宿主机对应路径：
+
+```text
+data/squid_manager.db -> /app/data/squid_manager.db
+squid/squid_passwd -> /app/squid/squid_passwd
+```
+
+也可以不使用 `.env` 文件，直接通过 `-e` 动态传参：
+
+```powershell
+docker run -d --name squid-manager `
+  -p 8000:8000 `
+  -e ADMIN_USERNAME=admin `
+  -e ADMIN_PASSWORD=your-password `
+  -e SESSION_SECRET_KEY=your-secret-key `
+  -e SQLITE_DB_PATH=/app/data/squid_manager.db `
+  -e SQUID_PASSWD_PATH=/app/squid/squid_passwd `
+  -v ${PWD}/data:/app/data `
+  -v ${PWD}/squid:/app/squid `
+  squid-manager
+```
+
+如果宿主机上的 Squid 服务实际读取 `/etc/squid/squid_passwd`，可以把宿主机 Squid 配置目录挂载到容器的 `/app/squid`：
+
+```bash
+docker run -d --name squid-manager \
+  -p 8000:8000 \
+  --env-file .env \
+  -e SQUID_PASSWD_PATH=/app/squid/squid_passwd \
+  -v /opt/squid-manager/data:/app/data \
+  -v /etc/squid:/app/squid \
+  squid-manager
+```
+
+不要只挂载单个 `squid_passwd` 文件。应用写入时会先生成临时文件再替换目标文件，挂载整个目录可以确保临时文件和替换操作都在同一目录内完成。
 
 ## 安全说明
 
