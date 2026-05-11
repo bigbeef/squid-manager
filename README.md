@@ -42,9 +42,14 @@ Squid Manager 主要解决 Squid 代理账号不好管理的问题。
 
 ### Docker 部署
 
-构建镜像：
+构建镜像（非必须，可直接拉公共镜像）：
 
 ```shell
+cd ~
+git clone https://gitee.com/winfed/squid-manager.git
+
+cd ~/squid-manager
+git pull
 docker build -f docker/Dockerfile -t winfed/squid-manager .
 ```
 

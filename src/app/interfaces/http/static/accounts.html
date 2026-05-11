@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Squid管理系统 账号管理</title>
   <link rel="stylesheet" href="https://unpkg.com/element-ui@2.15.14/lib/theme-chalk/index.css">
-  <link rel="stylesheet" href="/static/app.css">
+  <link rel="stylesheet" href="/static/css/common.css">
+  <link rel="stylesheet" href="/static/css/accounts.css">
 </head>
 <body class="admin-page">
   <div id="account-app" v-cloak>
@@ -19,82 +20,120 @@
           </div>
         </div>
         <div class="header-actions">
-          <el-button size="small" icon="el-icon-document-checked" @click="syncPasswd">同步 passwd</el-button>
           <el-button size="small" type="danger" icon="el-icon-switch-button" @click="logout">退出</el-button>
         </div>
       </el-header>
 
-      <el-main class="admin-main">
-        <el-card shadow="never" class="summary-card">
-          <div class="summary-content">
-            <div>
-              <p class="summary-kicker">ACCESS CONTROL</p>
-              <h1>代理账号管理</h1>
-              <p>维护 Squid passwd 文件账号。过期或禁用账号会自动从生效配置中移除。</p>
+      <el-container class="admin-body">
+        <el-aside width="220px" class="admin-aside">
+          <div class="aside-title">系统菜单</div>
+          <el-menu default-active="accounts" class="admin-menu">
+            <el-menu-item index="accounts">
+              <i class="el-icon-user"></i>
+              <span slot="title">账号管理</span>
+            </el-menu-item>
+          </el-menu>
+        </el-aside>
+
+        <el-main class="admin-main">
+          <el-card shadow="never" class="search-card">
+            <el-form :inline="true" :model="searchForm" class="search-form" @submit.native.prevent>
+              <el-form-item label="用户名">
+                <el-input
+                  v-model.trim="searchForm.username"
+                  clearable
+                  placeholder="请输入用户名"
+                  @keyup.enter.native="queryAccounts">
+                </el-input>
+              </el-form-item>
+              <el-form-item label="状态">
+                <el-select v-model="searchForm.status" clearable placeholder="全部状态">
+                  <el-option label="启用" value="enabled"></el-option>
+                  <el-option label="已禁用" value="disabled"></el-option>
+                  <el-option label="已过期" value="expired"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item class="search-actions">
+                <el-button type="primary" icon="el-icon-search" @click="queryAccounts">查询</el-button>
+                <el-button icon="el-icon-refresh-left" @click="resetSearch">重置</el-button>
+              </el-form-item>
+            </el-form>
+          </el-card>
+
+          <el-card shadow="never" class="table-card">
+            <div class="table-toolbar">
+              <div>
+                <div class="table-title">账号列表</div>
+              </div>
+              <div class="toolbar-actions">
+                <el-button type="primary" icon="el-icon-plus" @click="openCreateDialog">新增账号</el-button>
+                <el-button type="success" icon="el-icon-document-checked" @click="syncPasswd">同步passwd</el-button>
+              </div>
             </div>
-            <el-button type="primary" icon="el-icon-plus" @click="openCreateDialog">新增账号</el-button>
-          </div>
-        </el-card>
+            <div ref="tableArea" class="table-scroll">
+              <el-table
+                ref="accountTable"
+                :data="items"
+                :height="tableHeight"
+                stripe
+                border
+                v-loading="loading"
+                class="account-table">
+                <el-table-column prop="username" label="用户名" min-width="150"></el-table-column>
+                <el-table-column label="密码" min-width="220">
+                  <template slot-scope="scope">
+                    <span class="password-mask">{{ visiblePasswords[scope.row.id] ? scope.row.password : '••••••••' }}</span>
+                    <el-button type="text" size="mini" @click="togglePassword(scope.row)">
+                      {{ visiblePasswords[scope.row.id] ? '隐藏' : '查看' }}
+                    </el-button>
+                  </template>
+                </el-table-column>
+                <el-table-column label="状态" width="110">
+                  <template slot-scope="scope">
+                    <el-tag :type="statusType(scope.row.status)" size="small">{{ statusText(scope.row.status) }}</el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column label="过期时间" min-width="170">
+                  <template slot-scope="scope">{{ formatDate(scope.row.expires_at, '不过期') }}</template>
+                </el-table-column>
+                <el-table-column label="更新时间" min-width="170">
+                  <template slot-scope="scope">{{ formatDate(scope.row.updated_at, '-') }}</template>
+                </el-table-column>
+                <el-table-column label="操作" width="250" fixed="right">
+                  <template slot-scope="scope">
+                    <el-button size="mini" @click="openEditDialog(scope.row)">编辑</el-button>
+                    <el-button size="mini" :type="scope.row.enabled ? 'warning' : 'success'" @click="setEnabled(scope.row)">
+                      {{ scope.row.enabled ? '禁用' : '启用' }}
+                    </el-button>
+                    <el-button size="mini" type="danger" @click="deleteAccount(scope.row)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
 
-        <el-card shadow="never" class="table-card">
-          <div slot="header" class="card-header">
-            <span>账号列表</span>
-            <span class="card-tip">共 {{ total }} 条</span>
-          </div>
-          <el-table :data="items" stripe border v-loading="loading" class="account-table">
-            <el-table-column prop="username" label="用户名" min-width="150"></el-table-column>
-            <el-table-column label="密码" min-width="220">
-              <template slot-scope="scope">
-                <span class="password-mask">{{ visiblePasswords[scope.row.id] ? scope.row.password : '••••••••' }}</span>
-                <el-button type="text" size="mini" @click="togglePassword(scope.row)">
-                  {{ visiblePasswords[scope.row.id] ? '隐藏' : '查看' }}
-                </el-button>
-              </template>
-            </el-table-column>
-            <el-table-column label="状态" width="110">
-              <template slot-scope="scope">
-                <el-tag :type="statusType(scope.row.status)" size="small">{{ statusText(scope.row.status) }}</el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column label="过期时间" min-width="170">
-              <template slot-scope="scope">{{ formatDate(scope.row.expires_at, '不过期') }}</template>
-            </el-table-column>
-            <el-table-column label="更新时间" min-width="170">
-              <template slot-scope="scope">{{ formatDate(scope.row.updated_at, '-') }}</template>
-            </el-table-column>
-            <el-table-column label="操作" width="250" fixed="right">
-              <template slot-scope="scope">
-                <el-button size="mini" @click="openEditDialog(scope.row)">编辑</el-button>
-                <el-button size="mini" :type="scope.row.enabled ? 'warning' : 'success'" @click="setEnabled(scope.row)">
-                  {{ scope.row.enabled ? '禁用' : '启用' }}
-                </el-button>
-                <el-button size="mini" type="danger" @click="deleteAccount(scope.row)">删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-
-          <div class="pagination-row">
-            <el-pagination
-              background
-              layout="prev, pager, next, sizes, total"
-              :current-page.sync="page"
-              :page-size.sync="pageSize"
-              :page-sizes="[10, 20, 50, 100]"
-              :total="total"
-              @current-change="loadAccounts"
-              @size-change="handleSizeChange">
-            </el-pagination>
-          </div>
-        </el-card>
-      </el-main>
+            <div class="pagination-row">
+              <el-pagination
+                background
+                layout="total, sizes, prev, pager, next"
+                :current-page.sync="page"
+                :page-size.sync="pageSize"
+                :page-sizes="[10, 20, 50, 100]"
+                :total="total"
+                @current-change="loadAccounts"
+                @size-change="handleSizeChange">
+              </el-pagination>
+            </div>
+          </el-card>
+        </el-main>
+      </el-container>
 
       <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="520px" :close-on-click-modal="false">
         <el-form :model="form" :rules="rules" ref="accountForm" label-width="96px">
           <el-form-item label="用户名" prop="username">
             <el-input v-model="form.username" placeholder="字母、数字、点、下划线或中划线"></el-input>
           </el-form-item>
-          <el-form-item label="密码明文" prop="password">
-            <el-input v-model="form.password" show-password placeholder="页面可查看，数据库明文保存"></el-input>
+          <el-form-item label="密码" prop="password">
+            <el-input v-model="form.password" show-password placeholder="页面可查看密码"></el-input>
           </el-form-item>
           <el-form-item label="过期时间">
             <el-date-picker
@@ -119,6 +158,6 @@
 
   <script src="https://unpkg.com/vue@2.7.16/dist/vue.min.js"></script>
   <script src="https://unpkg.com/element-ui@2.15.14/lib/index.js"></script>
-  <script src="/static/app.js"></script>
+  <script src="/static/js/accounts.js"></script>
 </body>
 </html>

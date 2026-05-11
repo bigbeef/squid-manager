@@ -8,6 +8,11 @@ new Vue({
       pageSize: 20,
       total: 0,
       items: [],
+      tableHeight: 420,
+      searchForm: {
+        username: '',
+        status: '',
+      },
       visiblePasswords: {},
       dialogVisible: false,
       form: this.emptyForm(),
@@ -27,6 +32,11 @@ new Vue({
   },
   mounted() {
     this.loadAccounts();
+    this.updateTableHeight();
+    window.addEventListener('resize', this.updateTableHeight);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.updateTableHeight);
   },
   methods: {
     emptyForm() {
@@ -61,10 +71,17 @@ new Vue({
     async loadAccounts() {
       this.loading = true;
       try {
-        const payload = await this.requestJson(`/api/proxy-accounts?page=${this.page}&page_size=${this.pageSize}`);
+        const params = new URLSearchParams({
+          page: String(this.page),
+          page_size: String(this.pageSize),
+        });
+        if (this.searchForm.username) params.set('username', this.searchForm.username);
+        if (this.searchForm.status) params.set('status', this.searchForm.status);
+        const payload = await this.requestJson(`/api/proxy-accounts?${params.toString()}`);
         if (!payload) return;
         this.total = payload.total;
         this.items = payload.items;
+        this.$nextTick(this.updateTableHeight);
       } catch (error) {
         this.$message.error(error.message);
       } finally {
@@ -75,6 +92,25 @@ new Vue({
       this.pageSize = size;
       this.page = 1;
       this.loadAccounts();
+    },
+    queryAccounts() {
+      this.page = 1;
+      this.loadAccounts();
+    },
+    resetSearch() {
+      this.searchForm = { username: '', status: '' };
+      this.page = 1;
+      this.loadAccounts();
+    },
+    updateTableHeight() {
+      this.$nextTick(() => {
+        const tableArea = this.$refs.tableArea;
+        if (!tableArea) return;
+        this.tableHeight = Math.max(tableArea.clientHeight, 260);
+        this.$nextTick(() => {
+          if (this.$refs.accountTable) this.$refs.accountTable.doLayout();
+        });
+      });
     },
     formatDate(value, emptyText) {
       if (!value) return emptyText;

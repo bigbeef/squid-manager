@@ -17,12 +17,50 @@ class ProxyAccountRepository:
         statement = select(ProxyAccount).where(ProxyAccount.username == username)
         return self._session.execute(statement).scalar_one_or_none()
 
-    def list_page(self, page: int, page_size: int) -> tuple[list[ProxyAccount], int]:
+    def list_page(
+        self,
+        page: int,
+        page_size: int,
+        username: str | None = None,
+        status: str | None = None,
+        now: datetime | None = None,
+    ) -> tuple[list[ProxyAccount], int]:
         offset = (page - 1) * page_size
-        total = self._session.execute(select(func.count()).select_from(ProxyAccount)).scalar_one()
+        filters = []
+        if username:
+            filters.append(ProxyAccount.username.ilike(f"%{username}%"))
+
+        if status:
+            current_time = now or datetime.now().replace(microsecond=0)
+            active_expiration = or_(
+                ProxyAccount.expires_at.is_(None),
+                ProxyAccount.expires_at > current_time,
+            )
+            expired_condition = or_(
+                ProxyAccount.expired_at.is_not(None),
+                ProxyAccount.expires_at <= current_time,
+            )
+            if status == "enabled":
+                filters.extend([
+                    ProxyAccount.enabled.is_(True),
+                    ProxyAccount.expired_at.is_(None),
+                    active_expiration,
+                ])
+            elif status == "disabled":
+                filters.extend([
+                    ProxyAccount.enabled.is_(False),
+                    ProxyAccount.expired_at.is_(None),
+                    active_expiration,
+                ])
+            elif status == "expired":
+                filters.append(expired_condition)
+
+        base_statement = select(ProxyAccount).where(*filters)
+        total = self._session.execute(
+            select(func.count()).select_from(ProxyAccount).where(*filters)
+        ).scalar_one()
         rows = self._session.execute(
-            select(ProxyAccount)
-            .order_by(ProxyAccount.id.desc())
+            base_statement.order_by(ProxyAccount.id.desc())
             .offset(offset)
             .limit(page_size)
         ).scalars().all()

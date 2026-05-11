@@ -56,9 +56,17 @@ class ProxyAccountService:
         self._session = session
         self._repository = ProxyAccountRepository(session)
 
-    def list_page(self, page: int, page_size: int) -> tuple[list[ProxyAccountRead], int]:
-        accounts, total = self._repository.list_page(page, page_size)
+    def list_page(
+        self,
+        page: int,
+        page_size: int,
+        username: str | None = None,
+        status: str | None = None,
+    ) -> tuple[list[ProxyAccountRead], int]:
         now = local_now()
+        accounts, total = self._repository.list_page(
+            page, page_size, username, status, now
+        )
         return [to_read_model(account, now) for account in accounts], total
 
     def create(self, payload: ProxyAccountCreate) -> ProxyAccountRead:
@@ -68,7 +76,9 @@ class ProxyAccountService:
             password=payload.password,
             enabled=payload.enabled,
             expires_at=payload.expires_at,
-            expired_at=now if payload.expires_at is not None and payload.expires_at <= now else None,
+            expired_at=(
+                now if payload.expires_at is not None and payload.expires_at <= now else None
+            ),
             created_at=now,
             updated_at=now,
         )

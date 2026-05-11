@@ -35,9 +35,11 @@ def _service_response(callback):
 def list_accounts(
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
+    username: str | None = Query(None, min_length=1, max_length=128),
+    status: str | None = Query(None, pattern="^(enabled|disabled|expired)$"),
 ) -> ProxyAccountPage:
     def action(service: ProxyAccountService) -> ProxyAccountPage:
-        items, total = service.list_page(page, page_size)
+        items, total = service.list_page(page, page_size, username, status)
         return ProxyAccountPage(page=page, page_size=page_size, total=total, items=items)
 
     return _service_response(action)

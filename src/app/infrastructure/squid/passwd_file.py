@@ -4,9 +4,14 @@ from passlib.hash import apr_md5_crypt
 
 from src.app.infrastructure.db.models import ProxyAccount
 
+PASSWD_FILE_HEADER = [
+    "# 请在squid-manager中修改此文件，否则可能被覆盖导致不生效",
+    "# squid-manager访问地址http://127.0.0.1:56688",
+]
+
 
 def render_passwd_lines(accounts: list[ProxyAccount]) -> list[str]:
-    lines: list[str] = []
+    lines = PASSWD_FILE_HEADER.copy()
     for account in accounts:
         password_hash = apr_md5_crypt.hash(account.password)
         lines.append(f"{account.username}:{password_hash}")
