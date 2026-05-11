@@ -61,3 +61,6 @@ admin
 admin@123
 ```
 
+## 系统截图
+![登录页面](pic/login.png)
+![账号管理](pic/account.png)
