@@ -45,7 +45,7 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     settings = get_settings()
-    app = FastAPI(title="Squid管理系统", version=settings.app_version, lifespan=lifespan)
+    app = FastAPI(title="Squid代理管理系统", version=settings.app_version, lifespan=lifespan)
 
     @app.middleware("http")
     async def require_login(request: Request, call_next):

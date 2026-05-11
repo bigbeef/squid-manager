@@ -12,7 +12,7 @@ router = APIRouter(prefix="/health", tags=["system"])
 def health_check() -> dict[str, str]:
     return {
         "status": "UP",
-        "service": "Squid管理系统",
+        "service": "Squid代理管理系统",
         "version": get_settings().app_version,
         "timestamp": datetime.now().isoformat(),
     }
