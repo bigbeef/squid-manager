@@ -9,5 +9,6 @@ __pycache__
 *.py[cod]
 data
 squid
+squid-manager
 logs
 test

@@ -40,7 +40,45 @@ Squid代理管理系统主要解决 Squid 代理账号不好管理的问题。
 
 ## 快速开始
 
-### Docker 部署
+### Docker Compose 部署
+
+项目根目录已提供 `docker-compose.yml` 和 `squid.conf`，会同时启动 `squid-manager` 管理后台和 `squid` 代理服务。
+
+```shell
+git clone https://gitee.com/winfed/squid-manager.git
+cd squid-manager
+docker compose up -d
+```
+
+首次启动时，Compose 会自动创建运行时目录和密码文件：
+
+```text
+squid-manager/          # 管理系统 SQLite 数据目录，不提交到 Git
+squid/                  # Squid 运行时目录，不提交到 Git
+```
+
+访问后台：
+
+```text
+http://服务器IP:56688
+```
+
+Squid 代理地址：
+
+```text
+服务器IP:63128
+```
+
+默认管理员账号由 `docker-compose.yml` 配置：
+
+```text
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=change-this-password
+```
+
+请在正式使用前修改 `ADMIN_PASSWORD`。
+
+### Docker 镜像构建
 
 构建镜像（非必须，可直接拉公共镜像）：
 
@@ -52,36 +90,6 @@ cd ~/squid-manager
 git pull
 docker build -f docker/Dockerfile -t winfed/squid-manager .
 ```
-
-启动容器：
-
-```shell
-docker run -d --name squid-manager \
-  --restart=always \
-  -p 56688:8000 \
-  -e ADMIN_USERNAME=admin \
-  -e ADMIN_PASSWORD='change-this-password' \
-  -e SESSION_SECRET_KEY='change-this-random-secret' \
-  -e SQUID_PASSWD_PATH=/app/squid/passwd \
-  -v /app/docker/squid-manager/data:/app/data \
-  -v /app/docker/squid:/app/squid \
-  winfed/squid-manager
-```
-
-访问后台：
-
-```text
-http://服务器IP:56688
-```
-
-默认管理员账号由启动参数配置：
-
-```text
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=change-this-password
-```
-
-请在正式使用前修改为自己的管理员账号和强密码。
 
 ## 配置说明
 
@@ -98,16 +106,17 @@ ADMIN_PASSWORD=change-this-password
 
 | 路径 | 说明 |
 | --- | --- |
-| `/app/docker/squid-manager/data` | 管理系统数据目录 |
-| `/app/docker/squid` | Squid 配置目录，建议和 Squid 容器共享 |
+| `./squid-manager` | 管理系统 SQLite 数据目录 |
+| `./squid` | Squid 运行时目录，保存 passwd、cache、log 等文件 |
+| `./squid.conf` | Squid 配置文件，提交到 Git |
 
 ## Squid 配套搭建教程
 
-如果你还没有准备好 Squid 服务，可以参考：
+Compose 部署已包含 Squid 服务。如果你只想单独了解 Squid 容器配置，可以参考：
 
 [README_SQUID.md](https://github.com/bigbeef/squid-manager/blob/master/README_SQUID.md)
 
-Squid代理管理系统只负责管理 Squid 认证账号，Squid 服务本身需要单独部署。
+Squid代理管理系统只负责管理 Squid 认证账号，代理流量仍由 Squid 服务处理。
 
 ## 本地运行
 
@@ -128,7 +137,7 @@ http://127.0.0.1:8000/login
 
 - 为了支持在页面查看密码并生成 Squid 认证文件，代理账号密码会以可读取形式保存在管理系统中。
 - 请将后台部署在可信环境中，并保护好管理员账号、管理员密码和数据目录。
-- 正式使用时请务必修改默认密码和 `SESSION_SECRET_KEY`。
+- 正式使用时请务必修改默认密码。
 - 删除、禁用或过期的账号会从 Squid 生效账号中移除。
 
 ## 系统截图

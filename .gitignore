@@ -8,5 +8,7 @@ __pycache__/
 .pytest_cache/
 data/
 squid/
+squid-manager/
 logs/
 test/
+.env

@@ -1,0 +1,57 @@
+services:
+  init-runtime-dirs:
+    image: alpine:3.20
+    container_name: squid-manager-init
+    working_dir: /workspace
+    command: >
+      sh -c "
+      mkdir -p squid-manager squid/cache squid/errors squid/log &&
+      touch squid/passwd &&
+      chmod 777 squid/passwd &&
+      chmod 755 squid-manager &&
+      chown -R 13:13 squid/cache squid/log squid/errors
+      "
+    volumes:
+      - ./:/workspace
+    restart: "no"
+
+  squid-manager:
+    image: winfed/squid-manager
+    container_name: squid-manager
+    restart: always
+    depends_on:
+      init-runtime-dirs:
+        condition: service_completed_successfully
+      squid:
+        condition: service_started
+    ports:
+      - "56688:8000"
+    environment:
+      ADMIN_USERNAME: admin
+      ADMIN_PASSWORD: admin@123
+      SQLITE_DB_PATH: /app/squid-manager/squid_manager.db
+      SQUID_PASSWD_PATH: /app/squid/passwd
+    volumes:
+      - ./squid-manager:/app/squid-manager
+      - ./squid:/app/squid
+
+  squid:
+    image: ubuntu/squid:6.6-24.04_beta
+    container_name: squid
+    restart: always
+    depends_on:
+      init-runtime-dirs:
+        condition: service_completed_successfully
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+    logging:
+      driver: "none"
+    ports:
+      - "63128:3128"
+    volumes:
+      - ./squid:/app/docker/squid
+      - ./squid.conf:/etc/squid/squid.conf
+      - ./squid/errors:/usr/share/squid/errors
+      - ./squid/log:/var/log/squid
