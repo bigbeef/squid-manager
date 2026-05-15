@@ -1,10 +1,17 @@
 services:
-  init-runtime-dirs:
+  init-runtime:
     image: docker.m.daocloud.io/alpine:3.20
     container_name: squid-manager-init
     working_dir: /workspace
     command: >
       sh -c "
+      for compose_file in docker-compose.yml docker-compose.yaml; do
+        if [ -f \"$$compose_file\" ] && grep -Eq \"^[[:space:]]*ADMIN_PASSWORD:[[:space:]]*['\\\"]?change-this-password['\\\"]?[[:space:]]*$$\" \"$$compose_file\"; then
+          printf '警告：ADMIN_PASSWORD 仍然是默认值 change-this-password，请修改后重新启动。\n';
+          printf 'WARNING: ADMIN_PASSWORD is still the default value change-this-password. Please change it before restarting.\n';
+          exit 1;
+        fi;
+      done &&
       mkdir -p squid-manager squid/cache squid/errors squid/log &&
       touch squid/passwd &&
       chmod 777 squid/passwd &&
@@ -20,7 +27,7 @@ services:
     container_name: squid-manager
     restart: always
     depends_on:
-      init-runtime-dirs:
+      init-runtime:
         condition: service_completed_successfully
       squid:
         condition: service_started
@@ -28,7 +35,7 @@ services:
       - "56688:8000"
     environment:
       ADMIN_USERNAME: admin
-      ADMIN_PASSWORD: admin@123
+      ADMIN_PASSWORD: change-this-password
       SQLITE_DB_PATH: /app/squid-manager/squid_manager.db
       SQUID_PASSWD_PATH: /app/squid/passwd
     volumes:
@@ -40,7 +47,7 @@ services:
     container_name: squid
     restart: always
     depends_on:
-      init-runtime-dirs:
+      init-runtime:
         condition: service_completed_successfully
     ulimits:
       nofile:

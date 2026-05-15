@@ -49,9 +49,10 @@ cd ~
 git clone https://gitee.com/winfed/squid-manager.git
 
 cd ~/squid-manager
-git pull
+git pull --autostash
 docker build -f docker/Dockerfile -t winfed/squid-manager .
 
+docker compose down
 docker compose up -d
 ```
 
