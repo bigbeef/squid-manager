@@ -47,6 +47,11 @@ Squid代理管理系统主要解决 Squid 代理账号不好管理的问题。
 ```shell
 git clone https://gitee.com/winfed/squid-manager.git
 cd squid-manager
+
+cd ~/squid-manager
+git pull
+docker build -f docker/Dockerfile -t winfed/squid-manager .
+
 docker compose up -d
 ```
 
