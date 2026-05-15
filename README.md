@@ -45,8 +45,8 @@ Squid代理管理系统主要解决 Squid 代理账号不好管理的问题。
 项目根目录已提供 `docker-compose.yml` 和 `squid.conf`，会同时启动 `squid-manager` 管理后台和 `squid` 代理服务。
 
 ```shell
+cd ~
 git clone https://gitee.com/winfed/squid-manager.git
-cd squid-manager
 
 cd ~/squid-manager
 git pull
